@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Time's Up!</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #e74c3c;
+				color: white;
+				font-family: sans-serif;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+			}
+
+			h1 {
+				font-size: 20px;
+				margin-bottom: 20px;
+			}
+
+			button {
+				background-color: white;
+				color: #e74c3c;
+				border: none;
+				padding: 10px 20px;
+				font-size: 16px;
+				border-radius: 6px;
+				cursor: pointer;
+				font-weight: bold;
+			}
+
+			button:hover {
+				background-color: #f9f9f9;
+			}
+			#quote {
+				text-align: center;
+				margin-bottom: 20px;
+				margin-top: 0px;
+				background-color: #fff;
+				width: 80%;
+				border-radius: 5px;
+				color: #2e2e2e;
+				font-weight: bold;
+				padding: 10px 5px;
+			}
+			blockquote {
+				font-size: 1.2em;
+				line-height: 1.5em;
+			}
+
+			blockquote:before {
+				content: open-quote;
+			}
+
+			blockquote:after {
+				content: close-quote;
+			}
+
+			blockquote:before,
+			blockquote:after {
+				display: inline-block;
+				vertical-align: bottom;
+				color: orange;
+				font-size: 4em;
+				top: 0.2em;
+				position: relative;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>⏰ Your 2-minute timer is done!</h1>
+		<blockquote id="quote">Loading...</blockquote>
+		<button onclick="closePopup()">Close</button>
+
+		<script>
+			const { ipcRenderer } = require("electron");
+
+			ipcRenderer.on("quote", (event, quote) => {
+				document.getElementById("quote").innerText = quote;
+			});
+
+			function closePopup() {
+				ipcRenderer.send("close-popup");
+			}
+		</script>
+	</body>
+</html>

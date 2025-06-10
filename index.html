@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>2 Minutes Habit Timer</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			h1 {
+				text-align: center;
+			}
+			h1,
+			h3,
+			p {
+				padding: 0;
+				margin: 0;
+				font-weight: bold;
+				text-align: center;
+				font-family: "Roboto", sans-serif;
+				font-optical-sizing: auto;
+			}
+			h3 {
+				color: red;
+				text-transform: capitalize;
+				text-decoration: underline;
+				font-style: italic;
+			}
+			p#timer {
+				font-size: 5rem;
+			}
+			button {
+				margin: 0 auto;
+				display: block;
+				padding: 10px 15px;
+				border-radius: 8px;
+				background-color: coral;
+				font-weight: bolder;
+				color: #000;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>2-Minute Habit Timer</h1>
+		<h3>"What's on your mind? <br />Focus for just 2 minutes."</h3>
+		<p id="timer">02:00</p>
+		<button onclick="startTimer()">Start Countdown</button>
+
+		<audio id="chime" src="chime.mp3" preload="auto"></audio>
+
+		<script src="renderer.js"></script>
+	</body>
+</html>

@@ -1,0 +1,35 @@
+{
+	"name": "timerprogress",
+	"version": "1.0.0",
+	"description": "2 minute habit counter",
+	"main": "main.js",
+	"scripts": {
+		"start": "electron .",
+		"pack": "electron-builder --dir",
+		"dist": "electron-builder"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"electron": "^36.4.0",
+		"electron-reload": "^2.0.0-alpha.1",
+		"electron-builder": "^24.14.1"
+	},
+	"build": {
+		"appId": "com.example.timerapp",
+		"productName": "TimerApp",
+		"files": [
+			"**/*"
+		],
+		"win": {
+			"target": "nsis",
+			"icon": "build/icon.ico"
+		},
+		"nsis": {
+			"oneClick": false,
+			"perMachine": false,
+			"allowToChangeInstallationDirectory": true
+		}
+	}
+}
