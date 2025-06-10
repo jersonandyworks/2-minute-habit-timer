@@ -28,3 +28,20 @@ git clone https://github.com/your-username/2-minute-habit-timer.git
 cd 2-minute-habit-timer
 npm install # or other dependencies based on your setup
 npm start # launch the timer
+```
+## 🛠 Building exe file
+
+```
+npm install --save-dev electron-builder
+```
+### Add build scripts to your package.json
+```
+"scripts": {
+  "start": "electron .",
+  "pack": "electron-builder --dir",
+  "dist": "electron-builder"
+}
+```
+## Run the build command
+```
+npm run dist
