@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2-Minute Habit Timer — Design Samples</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  /* ─────────────  PALETTE  ───────────── */
+  :root {
+    --c1: #F2FCFE;   /* lightest  */
+    --c2: #96E6F5;   /* light     */
+    --c3: #57D9F1;   /* mid       */
+    --c4: #01C9EE;   /* primary   */
+
+    /* neutrals derived for legible text (not in the given palette) */
+    --ink:     #062E38;
+    --ink-mid: #3E6E7A;
+    --ink-dim: #7BA3AC;
+    --white:   #FFFFFF;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0 0 80px;
+    background: #E8F6FA;
+    background-image: radial-gradient(circle at 12% 8%, #FFFFFF 0%, transparent 45%),
+                      radial-gradient(circle at 88% 92%, var(--c2) 0%, transparent 50%);
+    font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink);
+  }
+
+  /* ─────────────  PAGE CHROME  ───────────── */
+  .page-head {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 48px 32px 8px;
+  }
+  .page-head h1 {
+    margin: 0 0 6px;
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .page-head p {
+    margin: 0 0 24px;
+    color: var(--ink-mid);
+    font-size: 15px;
+    max-width: 60ch;
+  }
+
+  .swatches { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .swatch {
+    width: 108px; height: 62px;
+    border-radius: 10px;
+    display: flex; align-items: flex-end;
+    padding: 8px;
+    font: 600 11px/1 "Space Grotesk", monospace;
+    box-shadow: 0 1px 3px rgba(6,46,56,.18);
+  }
+
+  .variant {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 40px 32px 8px;
+  }
+  .variant-head {
+    display: flex; align-items: baseline; gap: 14px;
+    border-top: 1px solid rgba(6,46,56,.12);
+    padding-top: 28px;
+    margin-bottom: 4px;
+  }
+  .variant-head h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .variant-head span { color: var(--ink-mid); font-size: 14px; }
+
+  .screens {
+    display: flex; gap: 28px; flex-wrap: wrap;
+    padding: 24px 0 8px;
+  }
+  .screen-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .screen-label {
+    font: 600 12px/1 "Space Grotesk", monospace;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  /* Electron window frame */
+  .win {
+    width: 360px; height: 600px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 18px 40px -12px rgba(6,46,56,.35), 0 2px 6px rgba(6,46,56,.12);
+    background: var(--white);
+  }
+  .titlebar {
+    height: 30px; flex: none;
+    background: #DCEEF3;
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 10px;
+    border-bottom: 1px solid rgba(6,46,56,.08);
+  }
+  .titlebar i { width: 9px; height: 9px; border-radius: 50%; background: #B8D6DE; display: block; }
+  .titlebar b {
+    margin-left: 6px;
+    font: 500 11px/1 "Outfit", sans-serif;
+    color: var(--ink-mid);
+  }
+  .body { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+  svg { display: block; }
+
+  /* ══════════════════════════════════════════
+     VARIANT A — SOFT AQUA (rounded, layered)
+     ══════════════════════════════════════════ */
+  .a .body { background: var(--c1); padding: 18px 18px; gap: 13px; }
+  .a .topbar { display: flex; align-items: center; justify-content: space-between; }
+  .a .iconbtn {
+    width: 34px; height: 34px; border-radius: 11px;
+    border: none; background: var(--white);
+    box-shadow: 0 1px 3px rgba(6,46,56,.12);
+    display: grid; place-items: center; color: var(--ink-mid); cursor: pointer;
+  }
+  .a .iconbtn.danger { color: #E0576B; }
+  .a h3.title { margin: 0; font-size: 21px; font-weight: 700; letter-spacing: -0.01em; }
+  .a .sub { margin: 2px 0 0; font-size: 13px; color: var(--ink-mid); }
+
+  .a .dial {
+    align-self: center;
+    width: 140px; height: 140px;
+    display: grid; place-items: center;
+    position: relative; margin: 6px 0 2px;
+  }
+  .a .dial .t {
+    position: absolute; text-align: center;
+  }
+  .a .dial .t b { display: block; font: 700 30px/1 "Space Grotesk", monospace; color: var(--ink); }
+  .a .dial .t span { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); }
+
+  .a .btn {
+    border: none; border-radius: 14px;
+    padding: 13px 18px;
+    font: 600 15px/1 "Outfit", sans-serif;
+    background: var(--c4); color: var(--white);
+    box-shadow: 0 6px 14px -4px rgba(1,201,238,.65);
+    cursor: pointer; width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .a .btn.ghost {
+    background: var(--white); color: var(--ink-mid);
+    box-shadow: inset 0 0 0 1.5px var(--c2);
+  }
+  .a .sect { font: 600 11px/1 "Outfit"; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-dim); }
+  .a .list { display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+  .a .card {
+    background: var(--white); border-radius: 16px;
+    padding: 11px 13px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 1px 3px rgba(6,46,56,.10);
+  }
+  .a .card .dot { width: 38px; height: 38px; border-radius: 12px; background: var(--c1); display: grid; place-items: center; color: var(--c4); flex: none; }
+  .a .card .txt { flex: 1; min-width: 0; }
+  .a .card .txt b { display: block; font-size: 14px; font-weight: 600; }
+  .a .card .txt span { font-size: 12px; color: var(--ink-dim); }
+  .a .card .streak {
+    font: 600 11px/1 "Space Grotesk", monospace;
+    background: var(--c1); color: var(--c4);
+    padding: 5px 8px; border-radius: 8px; flex: none;
+  }
+
+  .a .field { display: flex; flex-direction: column; gap: 6px; }
+  .a .field label { font: 600 11px/1 "Outfit"; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-dim); }
+  .a .field .input {
+    background: var(--white); border-radius: 12px;
+    box-shadow: inset 0 0 0 1.5px rgba(150,230,245,.9);
+    padding: 12px 13px; font-size: 14px; color: var(--ink);
+  }
+  .a .field .input.ph { color: var(--ink-dim); }
+  .a .field .input.area { height: 92px; }
+  .a .row2 { display: flex; gap: 10px; }
+  .a .row2 > * { flex: 1; }
+  .a .selectish { display: flex; align-items: center; justify-content: space-between; }
+  .a .footer { margin-top: auto; display: flex; gap: 10px; }
+  .a .log { background: var(--white); border-radius: 16px; padding: 4px 14px; box-shadow: 0 1px 3px rgba(6,46,56,.10); overflow: hidden; }
+  .a .log .li {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 0; font-size: 13px;
+    border-bottom: 1px solid var(--c1);
+  }
+  .a .log .li:last-child { border-bottom: none; }
+  .a .log .li span { font: 500 12px/1 "Space Grotesk", monospace; color: var(--ink-dim); }
+  .a .log .li i { font-style: normal; display: flex; align-items: center; gap: 8px; color: var(--ink); }
+  .a .tick { width: 16px; height: 16px; border-radius: 50%; background: var(--c1); color: var(--c4); display: grid; place-items: center; }
+
+  /* ══════════════════════════════════════════
+     VARIANT B — BOLD BLOCK (flat, high contrast)
+     ══════════════════════════════════════════ */
+  .b .body { background: var(--white); }
+  .b .hero {
+    background: var(--c4); color: var(--white);
+    padding: 22px 20px 26px;
+  }
+  .b .hero .bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .b .hero button {
+    background: rgba(255,255,255,.22); border: none; color: var(--white);
+    width: 32px; height: 32px; border-radius: 8px;
+    display: grid; place-items: center; cursor: pointer;
+  }
+  .b .hero .kicker { font: 700 11px/1 "Space Grotesk", monospace; letter-spacing: .18em; text-transform: uppercase; opacity: .8; }
+  .b .hero h3 { margin: 8px 0 0; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+  .b .hero .clock {
+    display: flex; align-items: baseline; gap: 10px; margin-top: 14px;
+  }
+  .b .hero .clock b { font: 700 46px/1 "Space Grotesk", monospace; letter-spacing: -0.03em; }
+  .b .hero .clock span { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; opacity: .85; }
+
+  .b .stack { padding: 20px; display: flex; flex-direction: column; gap: 14px; flex: 1; overflow: hidden; }
+  .b .btn {
+    border: none; border-radius: 8px; cursor: pointer; width: 100%;
+    padding: 15px 18px;
+    font: 700 14px/1 "Outfit"; letter-spacing: .04em; text-transform: uppercase;
+    background: var(--c4); color: var(--white);
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+  }
+  .b .btn.alt { background: var(--c1); color: var(--c4); box-shadow: inset 0 0 0 2px var(--c3); }
+  .b .lbl { font: 700 11px/1 "Space Grotesk", monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-dim); }
+  .b .habit {
+    border-left: 5px solid var(--c3);
+    background: var(--c1);
+    padding: 13px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .b .habit.active { border-left-color: var(--c4); }
+  .b .habit b { font-size: 15px; font-weight: 600; }
+  .b .habit small { display: block; font-size: 12px; color: var(--ink-mid); margin-top: 2px; }
+  .b .habit .n { font: 700 13px/1 "Space Grotesk", monospace; color: var(--c4); }
+  .b .list { display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+
+  .b .fld { display: flex; flex-direction: column; }
+  .b .fld .cap { font: 700 10px/1 "Space Grotesk", monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--c4); margin-bottom: 6px; }
+  .b .fld .box {
+    border: 2px solid var(--c2); border-radius: 6px;
+    padding: 12px; font-size: 14px; color: var(--ink);
+  }
+  .b .fld .box.dim { color: var(--ink-dim); }
+  .b .fld .box.tall { height: 84px; }
+  .b .fld .box.sel { display: flex; align-items: center; justify-content: space-between; }
+  .b .duo { display: flex; gap: 10px; }
+  .b .duo > * { flex: 1; }
+  .b .foot { margin-top: auto; display: flex; gap: 10px; }
+  .b .table { border: 2px solid var(--c2); border-radius: 6px; overflow: hidden; }
+  .b .table .tr {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 11px 12px; font-size: 13px;
+    border-bottom: 1px solid var(--c2);
+  }
+  .b .table .tr:last-child { border-bottom: none; }
+  .b .table .tr:nth-child(odd) { background: var(--c1); }
+  .b .table .tr span { font: 500 12px/1 "Space Grotesk", monospace; color: var(--ink-mid); }
+
+  /* ══════════════════════════════════════════
+     VARIANT C — GLASS GRADIENT (airy, frosted)
+     ══════════════════════════════════════════ */
+  .c .body {
+    background: linear-gradient(165deg, var(--c1) 0%, var(--c2) 45%, var(--c3) 100%);
+    padding: 18px 18px; gap: 12px;
+  }
+  .c .glass {
+    background: rgba(255,255,255,.62);
+    border: 1px solid rgba(255,255,255,.85);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px -10px rgba(6,46,56,.30);
+  }
+  .c .nav { display: flex; align-items: center; justify-content: space-between; }
+  .c .nav button {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.85);
+    background: rgba(255,255,255,.55);
+    display: grid; place-items: center; color: var(--ink); cursor: pointer;
+  }
+  .c .nav .name { font: 300 15px/1 "Outfit"; letter-spacing: .04em; color: var(--ink); }
+  .c h3 { margin: 0; font-size: 26px; font-weight: 300; letter-spacing: -0.01em; }
+  .c h3 b { font-weight: 700; }
+  .c .whisper { font-size: 13px; color: var(--ink-mid); margin: 4px 0 0; font-weight: 300; }
+
+  .c .ring { align-self: center; position: relative; display: grid; place-items: center; margin: 4px 0; }
+  .c .ring .cen { position: absolute; text-align: center; }
+  .c .ring .cen b { display: block; font: 300 38px/1 "Space Grotesk", monospace; color: var(--ink); letter-spacing: -0.02em; }
+  .c .ring .cen span { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mid); }
+  .c .ring.sm .cen b { font-size: 26px; }
+  .c .ring.sm .cen span { font-size: 8px; letter-spacing: .14em; }
+
+  .c .pill {
+    border: none; cursor: pointer; width: 100%;
+    padding: 15px; border-radius: 999px;
+    font: 500 14px/1 "Outfit"; letter-spacing: .06em;
+    background: var(--ink); color: var(--c1);
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+  }
+  .c .pill.light { background: rgba(255,255,255,.72); color: var(--ink); border: 1px solid rgba(255,255,255,.9); }
+  .c .cap { font: 400 10px/1 "Outfit"; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-mid); }
+  .c .items { display: flex; flex-direction: column; gap: 9px; overflow: hidden; }
+  .c .item {
+    padding: 13px 15px; border-radius: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .c .item .bul { width: 8px; height: 8px; border-radius: 50%; background: var(--c4); flex: none; }
+  .c .item .bul.off { background: var(--c2); }
+  .c .item b { font-weight: 500; font-size: 14px; flex: 1; }
+  .c .item span { font: 400 11px/1 "Space Grotesk", monospace; color: var(--ink-mid); }
+
+  .c .in {
+    padding: 13px 15px; border-radius: 16px; font-size: 14px; font-weight: 300; color: var(--ink);
+  }
+  .c .in.dim { color: var(--ink-mid); }
+  .c .in.tall { height: 88px; }
+  .c .in.sel { display: flex; align-items: center; justify-content: space-between; }
+  .c .pair { display: flex; gap: 10px; }
+  .c .pair > * { flex: 1; }
+  .c .end { margin-top: auto; display: flex; gap: 10px; }
+  .c .logs { padding: 6px 16px; border-radius: 20px; overflow: hidden; }
+  .c .logs .r {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 0; font-size: 13px; font-weight: 300;
+    border-bottom: 1px solid rgba(255,255,255,.9);
+  }
+  .c .logs .r:last-child { border-bottom: none; }
+  .c .logs .r span { font: 400 11px/1 "Space Grotesk", monospace; color: var(--ink-mid); }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>2-Minute Habit Timer — design samples</h1>
+  <p>Three visual directions for the three sketched screens (Home, Create Habit, Habit View). Windows drawn at 360×600. Palette below is used as given; dark ink tones are added because the four supplied colours are all too light to carry body text.</p>
+  <div class="swatches">
+    <div class="swatch" style="background:#F2FCFE;color:#062E38;border:1px solid rgba(6,46,56,.12)">#F2FCFE</div>
+    <div class="swatch" style="background:#96E6F5;color:#062E38">#96E6F5</div>
+    <div class="swatch" style="background:#57D9F1;color:#062E38">#57D9F1</div>
+    <div class="swatch" style="background:#01C9EE;color:#FFFFFF">#01C9EE</div>
+    <div class="swatch" style="background:#062E38;color:#F2FCFE">#062E38 <span style="opacity:.6">&nbsp;ink</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ VARIANT A ═══════════════════════ -->
+<section class="variant a">
+  <div class="variant-head">
+    <h2>A · Soft Aqua</h2>
+    <span>Rounded cards on a near-white ground, one saturated accent, soft shadow. Calm, friendly, easiest to build.</span>
+  </div>
+  <div class="screens">
+
+    <!-- A / Home -->
+    <div class="screen-wrap">
+      <div class="screen-label">Home</div>
+      <div class="win">
+        <div class="titlebar"><i></i><i></i><i></i><b>2-Minute Habit Timer</b></div>
+        <div class="body">
+          <div class="topbar">
+            <div>
+              <h3 class="title">Good afternoon</h3>
+              <p class="sub">Two minutes is all it takes.</p>
+            </div>
+            <button class="iconbtn" aria-label="Settings">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.34.4.62.73.79"/></svg>
+            </button>
+          </div>
+
+          <div class="dial">
+            <svg width="140" height="140" viewBox="0 0 168 168">
+              <circle cx="84" cy="84" r="72" fill="none" stroke="#96E6F5" stroke-width="10" opacity=".45"/>
+              <circle cx="84" cy="84" r="72" fill="none" stroke="#01C9EE" stroke-width="10"
+                      stroke-linecap="round" stroke-dasharray="452" stroke-dashoffset="113"
+                      transform="rotate(-90 84 84)"/>
+            </svg>
+            <div class="t"><b>02:00</b><span>Ready</span></div>
+          </div>
+
+          <button class="btn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Create New Habit
+          </button>
+
+          <div class="sect">Your habits</div>
+          <div class="list">
+            <div class="card">
+              <div class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+              <div class="txt"><b>Coding Habit</b><span>Mon · 3:00 PM</span></div>
+              <div class="streak">5d</div>
+            </div>
+            <div class="card">
+              <div class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+              <div class="txt"><b>Read One Page</b><span>Daily · 8:00 PM</span></div>
+              <div class="streak">12d</div>
+            </div>
+            <div class="card">
+              <div class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+              <div class="txt"><b>Stretch</b><span>Daily · 7:00 AM</span></div>
+              <div class="streak">3d</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- A / Create -->
+    <div class="screen-wrap">
+      <div class="screen-label">Create Habit</div>
+      <div class="win">
+        <div class="titlebar"><i></i><i></i><i></i><b>New Habit</b></div>
+        <div class="body">
+          <div class="topbar">
+            <button class="iconbtn" aria-label="Back">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h3 class="title" style="font-size:17px">New Habit</h3>
+            <div style="width:34px"></div>
+          </div>
+
+          <div class="field">
+            <label>Name</label>
+            <div class="input ph">e.g. Coding Habit</div>
+          </div>
+
+          <div class="field">
+            <label>Describe</label>
+            <div class="input area ph">What will you do for two minutes?</div>
+          </div>
+
+          <div class="field">
+            <label>Alarm reminder</label>
+            <div class="row2">
+              <div class="input selectish">3:00 PM
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7BA3AC" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+              </div>
+              <div class="input selectish">Monday
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7BA3AC" stroke-width="2.4" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Duration</label>
+            <div class="input selectish">2 minutes
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7BA3AC" stroke-width="2.4" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
+          <div class="footer">
+            <button class="btn ghost">Cancel</button>
+            <button class="btn">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- A / Habit View -->
+    <div class="screen-wrap">
+      <div class="screen-label">Habit View</div>
+      <div class="win">
+        <div class="titlebar"><i></i><i></i><i></i><b>Coding Habit</b></div>
+        <div class="body">
+          <div class="topbar">
+            <button class="iconbtn" aria-label="Back">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="iconbtn danger" aria-label="Delete habit">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+          </div>
+
+          <div>
+            <h3 class="title">Coding Habit</h3>
+            <p class="sub">Open the editor. Write one line. That's the whole rule.</p>
+          </div>
+
+          <button class="btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            Start Now · 2:00
+          </button>
+
+          <div class="sect">History log</div>
+          <div class="log">
+            <div class="li"><i><span class="tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Session 5</i><span>09/06/2026</span></div>
+            <div class="li"><i><span class="tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Session 4</i><span>09/05/2026</span></div>
+            <div class="li"><i><span class="tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Session 3</i><span>09/04/2026</span></div>
+            <div class="li"><i><span class="tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Session 2</i><span>09/03/2026</span></div>
+            <div class="li"><i><span class="tick"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>Session 1</i><span>09/02/2026</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════ VARIANT B ═══════════════════════ -->
+<section class="variant b">
+  <div class="variant-head">
+    <h2>B · Bold Block</h2>
+    <span>Saturated header slab, flat surfaces, square corners, monospace numerals. Reads clearly at a glance in a small always-on-top window.</span>
+  </div>
+  <div class="screens">
+
+    <!-- B / Home -->
+    <div class="screen-wrap">
+      <div class="screen-label">Home</div>
+      <div class="win">
+        <div class="titlebar"><i></i><i></i><i></i><b>2-Minute Habit Timer</b></div>
+        <div class="body">
+          <div class="hero">
+            <div class="bar">
+              <div class="kicker">Two-Minute Rule</div>
+              <button aria-label="Settings">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.34.4.62.73.79"/></svg>
+              </button>
+            </div>
+            <h3>Pick one thing.</h3>
+            <div class="clock">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+              <b>02:00</b>
+              <span>Ready</span>
+            </div>
+          </div>
+
+          <div class="stack">
+            <button class="btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              Create New Habit
+            </button>
+
+            <div class="lbl">Created habits</div>
+            <div class="list">
+              <div class="habit active">
+                <div><b>Coding Habit</b><small>Monday · 3:00 PM</small></div>
+                <div class="n">5</div>
+              </div>
+              <div class="habit">
+                <div><b>Read One Page</b><small>Daily · 8:00 PM</small></div>
+                <div class="n">12</div>
+              </div>
+              <div class="habit">
+                <div><b>Stretch</b><small>Daily · 7:00 AM</small></div>
+                <div class="n">3</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B / Create -->
+    <div class="screen-wrap">
+      <div class="screen-label">Create Habit</div>
+      <div class="win">
+        <div class="titlebar"><i></i><i></i><i></i><b>New Habit</b></div>
+        <div class="body">
+          <div class="hero" style="padding-bottom:20px">
+            <div class="bar" style="margin-bottom:12px">
+              <button aria-label="Back">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="kicker">Step 1 of 1</div>
+              <div style="width:32px"></div>
+            </div>
+            <h3 style="font-size:22px">New Habit</h3>
+          </div>
+
+          <div class="stack">
+            <div class="fld">
+              <div class="cap">Name</div>
+              <div class="box dim">e.g. Coding Habit</div>
+            </div>
+            <div class="fld">
+              <div class="cap">Describe</div>
+              <div class="box tall dim">What will you do for two minutes?</div>
+            </div>
+            <div class="fld">
+              <div class="cap">Alarm reminder</div>
+              <div class="duo">
+                <div class="box sel">3:00 PM
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#01C9EE" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+                </div>
+                <div class="box sel">Monday
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#01C9EE" stroke-width="2.6" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="fld">
+              <div class="cap">Duration</div>
+              <div class="box sel">2 minutes
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#01C9EE" stroke-width="2.6" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div class="foot">
+              <button class="btn alt">Cancel</button>
+              <button class="btn">Create</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- B / Habit View -->
+    <div class="screen-wrap">
+      <div class="screen-label">Habit View</div>
+      <div class="win">
+        <div class="titlebar"><i></i><i></i><i></i><b>Coding Habit</b></div>
+        <div class="body">
+          <div class="hero">
+            <div class="bar">
+              <button aria-label="Back">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button aria-label="Delete habit">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              </button>
+            </div>
+            <div class="kicker">Monday · 3:00 PM</div>
+            <h3>Coding Habit</h3>
+            <div class="clock"><b>02:00</b><span>5 day streak</span></div>
+          </div>
+
+          <div class="stack">
+            <button class="btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+              Start Now
+            </button>
+
+            <div class="lbl">History log</div>
+            <div class="table">
+              <div class="tr">Log 5 <span>09/06/2026</span></div>
+              <div class="tr">Log 4 <span>09/05/2026</span></div>
+              <div class="tr">Log 3 <span>09/04/2026</span></div>
+              <div class="tr">Log 2 <span>09/03/2026</span></div>
+              <div class="tr">Log 1 <span>09/02/2026</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════ VARIANT C ═══════════════════════ -->
+<section class="variant c">
+  <div class="variant-head">
+    <h2>C · Glass Gradient</h2>
+    <span>Full-bleed palette gradient with frosted panels and light type. Most atmospheric, least chrome — leans on the four colours doing the work.</span>
+  </div>
+  <div class="screens">
+
+    <!-- C / Home -->
+    <div class="screen-wrap">
+      <div class="screen-label">Home</div>
+      <div class="win">
+        <div class="titlebar"><i></i><i></i><i></i><b>2-Minute Habit Timer</b></div>
+        <div class="body">
+          <div class="nav">
+            <div class="name">Two minutes</div>
+            <button aria-label="Settings">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.34.4.62.73.79"/></svg>
+            </button>
+          </div>
+
+          <div class="ring">
+            <svg width="176" height="176" viewBox="0 0 176 176">
+              <circle cx="88" cy="88" r="76" fill="rgba(255,255,255,.45)"/>
+              <circle cx="88" cy="88" r="76" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2"/>
+              <circle cx="88" cy="88" r="66" fill="none" stroke="#062E38" stroke-width="2.5"
+                      stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="104"
+                      transform="rotate(-90 88 88)" opacity=".85"/>
+            </svg>
+            <div class="cen"><b>02:00</b><span>Ready</span></div>
+          </div>
+
+          <button class="pill">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Create New Habit
+          </button>
+
+          <div class="cap">Created habits</div>
+          <div class="items">
+            <div class="item glass"><span class="bul"></span><b>Coding Habit</b><span>5d</span></div>
+            <div class="item glass"><span class="bul"></span><b>Read One Page</b><span>12d</span></div>
+            <div class="item glass"><span class="bul off"></span><b>Stretch</b><span>3d</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C / Create -->
+    <div class="screen-wrap">
+      <div class="screen-label">Create Habit</div>
+      <div class="win">
+        <div class="titlebar"><i></i><i></i><i></i><b>New Habit</b></div>
+        <div class="body">
+          <div class="nav">
+            <button aria-label="Back">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="name">New habit</div>
+            <div style="width:36px"></div>
+          </div>
+
+          <h3 style="margin-top:4px">A <b>small</b> promise.</h3>
+          <p class="whisper">Name it, then keep it for two minutes.</p>
+
+          <div class="cap">Name</div>
+          <div class="in glass dim">e.g. Coding Habit</div>
+
+          <div class="cap">Describe</div>
+          <div class="in glass tall dim">What will you do for two minutes?</div>
+
+          <div class="cap">Alarm reminder</div>
+          <div class="pair">
+            <div class="in glass sel">3:00 PM
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3E6E7A" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+            </div>
+            <div class="in glass sel">Monday
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3E6E7A" stroke-width="2.2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
+          <div class="cap">Duration</div>
+          <div class="in glass sel">2 minutes
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3E6E7A" stroke-width="2.2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+
+          <div class="end">
+            <button class="pill light">Cancel</button>
+            <button class="pill">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C / Habit View -->
+    <div class="screen-wrap">
+      <div class="screen-label">Habit View</div>
+      <div class="win">
+        <div class="titlebar"><i></i><i></i><i></i><b>Coding Habit</b></div>
+        <div class="body">
+          <div class="nav">
+            <button aria-label="Back">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="name">Habit</div>
+            <button aria-label="Delete habit">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+          </div>
+
+          <h3 style="margin-top:6px"><b>Coding</b> Habit</h3>
+          <p class="whisper">Monday · 3:00 PM · 5 day streak</p>
+
+          <div class="ring sm" style="margin:0">
+            <svg width="122" height="122" viewBox="0 0 150 150">
+              <circle cx="75" cy="75" r="64" fill="rgba(255,255,255,.45)"/>
+              <circle cx="75" cy="75" r="64" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2"/>
+              <circle cx="75" cy="75" r="55" fill="none" stroke="#062E38" stroke-width="2.5"
+                      stroke-linecap="round" stroke-dasharray="346" stroke-dashoffset="0"
+                      transform="rotate(-90 75 75)" opacity=".85"/>
+            </svg>
+            <div class="cen"><b>02:00</b><span>Tap to begin</span></div>
+          </div>
+
+          <button class="pill">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            Start Now
+          </button>
+
+          <div class="cap">History log</div>
+          <div class="logs glass">
+            <div class="r">Log 5 <span>09/06/2026</span></div>
+            <div class="r">Log 4 <span>09/05/2026</span></div>
+            <div class="r">Log 3 <span>09/04/2026</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</body>
+</html>

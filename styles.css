@@ -1,0 +1,688 @@
+/* ─────────────────────────────────────────────
+   Design A — "Soft Aqua"
+   Rounded cards on a near-white ground, one
+   saturated accent, soft shadow.
+   ───────────────────────────────────────────── */
+
+:root {
+	--c1: #f2fcfe; /* app background */
+	--c2: #96e6f5; /* borders, muted fills */
+	--c3: #57d9f1; /* secondary accent */
+	--c4: #01c9ee; /* primary accent */
+
+	/* Neutrals — the four palette colours are all too light for text. */
+	--ink: #062e38;
+	--ink-mid: #3e6e7a;
+	--ink-dim: #7ba3ac;
+	--white: #ffffff;
+	--danger: #e0576b;
+
+	--radius-card: 16px;
+	--radius-ctl: 14px;
+	--radius-field: 12px;
+	--shadow-card: 0 1px 3px rgba(6, 46, 56, 0.1);
+	--shadow-accent: 0 6px 14px -4px rgba(1, 201, 238, 0.65);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	background: var(--c1);
+	color: var(--ink);
+	font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+	font-size: 14px;
+	overflow: hidden;
+	user-select: none;
+}
+
+button {
+	font-family: inherit;
+}
+
+/* ───────────── view switching ───────────── */
+
+.view {
+	display: none;
+	flex-direction: column;
+	gap: 13px;
+	height: 100%;
+	padding: 18px;
+	overflow: hidden;
+}
+
+.view.active {
+	display: flex;
+}
+
+/* ───────────── top bar ───────────── */
+
+/* Scrolling body for views taller than the window; the footer stays put. */
+.scrollarea {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+	gap: 13px;
+	padding-right: 3px;
+	margin-right: -3px;
+}
+
+.scrollarea::-webkit-scrollbar {
+	width: 6px;
+}
+
+.scrollarea::-webkit-scrollbar-thumb {
+	background: var(--c2);
+	border-radius: 3px;
+}
+
+.scrollarea::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex: none;
+}
+
+.topbar .spacer {
+	width: 34px;
+}
+
+.title {
+	margin: 0;
+	font-size: 21px;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+.title.sm {
+	font-size: 17px;
+}
+
+.sub {
+	margin: 2px 0 0;
+	font-size: 13px;
+	color: var(--ink-mid);
+}
+
+.metarow {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 6px;
+}
+
+.meta {
+	font: 500 12px/1 "Space Grotesk", monospace;
+	color: var(--c4);
+	background: var(--white);
+	box-shadow: var(--shadow-card);
+	border-radius: 8px;
+	padding: 6px 9px;
+	display: inline-block;
+}
+
+.meta:empty {
+	display: none;
+}
+
+.meta.work {
+	color: var(--ink-mid);
+	background: var(--white);
+	font-family: "Outfit", sans-serif;
+	font-weight: 600;
+}
+
+.meta.closed {
+	color: var(--ink-dim);
+	background: transparent;
+	box-shadow: inset 0 0 0 1.5px var(--c2);
+}
+
+.iconbtn {
+	width: 34px;
+	height: 34px;
+	flex: none;
+	border: none;
+	border-radius: 11px;
+	background: var(--white);
+	box-shadow: var(--shadow-card);
+	color: var(--ink-mid);
+	display: grid;
+	place-items: center;
+	cursor: pointer;
+	transition: transform 0.12s ease, color 0.12s ease;
+}
+
+.iconbtn:hover {
+	color: var(--c4);
+}
+
+.iconbtn:active {
+	transform: scale(0.94);
+}
+
+.iconbtn.danger:hover {
+	color: var(--danger);
+}
+
+/* ───────────── countdown dial ───────────── */
+
+.dial {
+	align-self: center;
+	position: relative;
+	width: 140px;
+	height: 140px;
+	flex: none;
+	display: grid;
+	place-items: center;
+	margin: 2px 0;
+}
+
+.dial svg {
+	display: block;
+}
+
+.dial .arc {
+	transition: stroke-dashoffset 0.9s linear;
+}
+
+.dial .readout {
+	position: absolute;
+	text-align: center;
+}
+
+.dial .readout b {
+	display: block;
+	font: 700 30px/1 "Space Grotesk", monospace;
+	color: var(--ink);
+}
+
+.dial .readout span {
+	font-size: 11px;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--ink-dim);
+}
+
+/* ───────────── buttons ───────────── */
+
+.btn {
+	width: 100%;
+	flex: none;
+	border: none;
+	border-radius: var(--radius-ctl);
+	padding: 13px 18px;
+	font: 600 15px/1 "Outfit", sans-serif;
+	background: var(--c4);
+	color: var(--white);
+	box-shadow: var(--shadow-accent);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.btn:hover {
+	filter: brightness(1.06);
+}
+
+.btn:active {
+	transform: scale(0.985);
+}
+
+.btn.ghost {
+	background: var(--white);
+	color: var(--ink-mid);
+	box-shadow: inset 0 0 0 1.5px var(--c2);
+}
+
+/* While a session runs the button is a readout, not an action. */
+.btn.running svg {
+	display: none;
+}
+
+.btn.running {
+	background: var(--white);
+	color: var(--c4);
+	box-shadow: inset 0 0 0 1.5px var(--c3);
+	font-family: "Space Grotesk", monospace;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	cursor: default;
+}
+
+/* Session window has closed for today — the button stays visible but inert. */
+.btn.locked,
+.btn.locked:hover {
+	background: var(--c1);
+	color: var(--ink-dim);
+	box-shadow: inset 0 0 0 1.5px var(--c2);
+	cursor: not-allowed;
+	filter: none;
+}
+
+.btn.locked svg {
+	display: none;
+}
+
+.btn.danger {
+	background: var(--danger);
+	box-shadow: 0 6px 14px -4px rgba(224, 87, 107, 0.6);
+}
+
+.linkbtn {
+	align-self: center;
+	flex: none;
+	border: none;
+	background: none;
+	color: var(--ink-dim);
+	font-size: 12px;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	cursor: pointer;
+	padding: 4px;
+}
+
+.linkbtn:hover {
+	color: var(--danger);
+}
+
+/* ───────────── section label ───────────── */
+
+.sect {
+	flex: none;
+	font: 600 11px/1 "Outfit", sans-serif;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--ink-dim);
+}
+
+/* ───────────── habit cards ───────────── */
+
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-right: 2px;
+	margin-right: -2px;
+}
+
+.card {
+	flex: none;
+	background: var(--white);
+	border-radius: var(--radius-card);
+	padding: 11px 13px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	box-shadow: var(--shadow-card);
+	cursor: pointer;
+	border: none;
+	width: 100%;
+	text-align: left;
+	font-family: inherit;
+	transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.card:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 4px 10px -2px rgba(6, 46, 56, 0.16);
+}
+
+.card .dot {
+	width: 38px;
+	height: 38px;
+	flex: none;
+	border-radius: 12px;
+	background: var(--c1);
+	color: var(--c4);
+	display: grid;
+	place-items: center;
+}
+
+.card .txt {
+	flex: 1;
+	min-width: 0;
+}
+
+.card .txt b {
+	display: block;
+	font-size: 14px;
+	font-weight: 600;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.card .txt span {
+	font-size: 12px;
+	color: var(--ink-dim);
+}
+
+.card .streak {
+	flex: none;
+	font: 600 11px/1 "Space Grotesk", monospace;
+	background: var(--c1);
+	color: var(--c4);
+	padding: 5px 8px;
+	border-radius: 8px;
+}
+
+/* ───────────── empty state ───────────── */
+
+.empty {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	color: var(--ink-dim);
+	text-align: center;
+	padding: 0 20px;
+}
+
+.empty svg {
+	color: var(--c2);
+}
+
+.empty p {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+/* ───────────── form fields ───────────── */
+
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	flex: none;
+}
+
+.field label {
+	font: 600 11px/1 "Outfit", sans-serif;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--ink-dim);
+}
+
+.field input,
+.field textarea,
+.field select {
+	width: 100%;
+	background: var(--white);
+	border: none;
+	border-radius: var(--radius-field);
+	box-shadow: inset 0 0 0 1.5px rgba(150, 230, 245, 0.9);
+	padding: 12px 13px;
+	font-family: inherit;
+	font-size: 14px;
+	color: var(--ink);
+	outline: none;
+	user-select: text;
+	transition: box-shadow 0.12s ease;
+}
+
+.field textarea {
+	height: 92px;
+	resize: none;
+	line-height: 1.45;
+}
+
+.field select {
+	appearance: none;
+	cursor: pointer;
+	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%237BA3AC' stroke-width='2.4' stroke-linecap='round'><polyline points='6 9 12 15 18 9'/></svg>");
+	background-repeat: no-repeat;
+	background-position: right 13px center;
+	padding-right: 34px;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+	box-shadow: inset 0 0 0 2px var(--c4);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+	color: var(--ink-dim);
+}
+
+/* ───────────── icon picker ───────────── */
+
+.icongrid {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 8px;
+}
+
+.icontile {
+	position: relative;
+	aspect-ratio: 1;
+	border: none;
+	border-radius: 12px;
+	background: var(--white);
+	box-shadow: inset 0 0 0 1.5px rgba(150, 230, 245, 0.9);
+	color: var(--ink-mid);
+	display: grid;
+	place-items: center;
+	cursor: pointer;
+	padding: 0;
+	transition: transform 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.icontile:hover {
+	color: var(--c4);
+	transform: translateY(-1px);
+}
+
+.icontile[aria-checked="true"] {
+	color: var(--c4);
+	box-shadow: inset 0 0 0 2px var(--c4);
+}
+
+/* The check badge only exists on the selected tile. */
+.icontile .check {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: var(--c4);
+	color: var(--white);
+	display: none;
+	place-items: center;
+	box-shadow: 0 1px 3px rgba(6, 46, 56, 0.25);
+}
+
+.icontile[aria-checked="true"] .check {
+	display: grid;
+}
+
+.row2 {
+	display: flex;
+	gap: 10px;
+}
+
+.row2 > input,
+.row2 > select {
+	flex: 1;
+	min-width: 0;
+}
+
+/* "to" between the two reminder times */
+.row2 .dash {
+	flex: none;
+	align-self: center;
+	font-size: 12px;
+	color: var(--ink-dim);
+}
+
+/* The day picker sits under the time window, inside the same field. */
+.field .row2 + select {
+	margin-top: 2px;
+}
+
+.error {
+	flex: none;
+	margin: -4px 0 0;
+	font-size: 12px;
+	color: var(--danger);
+	min-height: 15px;
+}
+
+.footer {
+	margin-top: auto;
+	flex: none;
+	display: flex;
+	gap: 10px;
+	padding-top: 4px;
+}
+
+/* Side-by-side buttons share the row instead of each claiming 100%. */
+.footer .btn {
+	flex: 1 1 0;
+	width: auto;
+	min-width: 0;
+}
+
+/* ───────────── history log ───────────── */
+
+.log {
+	background: var(--white);
+	border-radius: var(--radius-card);
+	padding: 2px 14px;
+	box-shadow: var(--shadow-card);
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.log .li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 11px 0;
+	font-size: 13px;
+	border-bottom: 1px solid var(--c1);
+}
+
+.log .li:last-child {
+	border-bottom: none;
+}
+
+.log .li i {
+	font-style: normal;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--ink);
+}
+
+.log .li span {
+	font: 500 12px/1 "Space Grotesk", monospace;
+	color: var(--ink-dim);
+}
+
+.log .none {
+	padding: 16px 0;
+	text-align: center;
+	font-size: 13px;
+	color: var(--ink-dim);
+}
+
+.tick {
+	width: 16px;
+	height: 16px;
+	flex: none;
+	border-radius: 50%;
+	background: var(--c1);
+	color: var(--c4);
+	display: grid;
+	place-items: center;
+}
+
+/* ───────────── scrollbars ───────────── */
+
+.list::-webkit-scrollbar,
+.log::-webkit-scrollbar {
+	width: 6px;
+}
+
+.list::-webkit-scrollbar-thumb,
+.log::-webkit-scrollbar-thumb {
+	background: var(--c2);
+	border-radius: 3px;
+}
+
+.list::-webkit-scrollbar-track,
+.log::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* ───────────── confirm sheet ───────────── */
+
+.sheet {
+	position: fixed;
+	inset: 0;
+	background: rgba(6, 46, 56, 0.35);
+	display: none;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	z-index: 10;
+}
+
+.sheet.open {
+	display: flex;
+}
+
+.sheet .panel {
+	background: var(--white);
+	border-radius: 18px;
+	padding: 20px;
+	width: 100%;
+	box-shadow: 0 18px 40px -12px rgba(6, 46, 56, 0.4);
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.sheet .panel h4 {
+	margin: 0;
+	font-size: 17px;
+	font-weight: 700;
+}
+
+.sheet .panel p {
+	margin: 0 0 10px;
+	font-size: 13px;
+	color: var(--ink-mid);
+	line-height: 1.45;
+}
+
+.sheet .panel .footer {
+	margin-top: 0;
+	padding-top: 0;
+}

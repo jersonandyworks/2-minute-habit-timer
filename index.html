@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			http-equiv="Content-Security-Policy"
+			content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'"
+		/>
+		<title>2-Minute Habit Timer</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<!-- ═══════════════ HOME ═══════════════ -->
+		<section class="view active" id="view-home">
+			<div class="topbar">
+				<div>
+					<h1 class="title" id="greeting">Good afternoon</h1>
+					<p class="sub" id="home-sub">Two minutes is all it takes.</p>
+				</div>
+			</div>
+
+			<div class="dial">
+				<svg width="140" height="140" viewBox="0 0 168 168" aria-hidden="true">
+					<circle cx="84" cy="84" r="72" fill="none" stroke="#96E6F5" stroke-width="10" opacity=".45" />
+					<circle
+						class="arc"
+						id="home-arc"
+						cx="84"
+						cy="84"
+						r="72"
+						fill="none"
+						stroke="#01C9EE"
+						stroke-width="10"
+						stroke-linecap="round"
+						stroke-dasharray="452"
+						stroke-dashoffset="452"
+						transform="rotate(-90 84 84)"
+					/>
+				</svg>
+				<div class="readout">
+					<b id="home-time">02:00</b>
+					<span id="home-state">Ready</span>
+				</div>
+			</div>
+
+			<button class="btn" id="btn-new">
+				<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+					<path d="M12 5v14M5 12h14" />
+				</svg>
+				Create New Habit
+			</button>
+
+			<div class="sect">Your habits</div>
+			<div class="list" id="habit-list"></div>
+		</section>
+
+		<!-- ═══════════════ CREATE ═══════════════ -->
+		<section class="view" id="view-create">
+			<div class="topbar">
+				<button class="iconbtn" id="btn-create-back" aria-label="Back">
+					<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+						<polyline points="15 18 9 12 15 6" />
+					</svg>
+				</button>
+				<h2 class="title sm">New Habit</h2>
+				<div class="spacer"></div>
+			</div>
+
+			<div class="scrollarea">
+				<div class="field">
+					<label for="f-name">Name</label>
+					<input id="f-name" type="text" maxlength="60" placeholder="e.g. Coding Habit" autocomplete="off" />
+				</div>
+
+				<div class="field">
+					<label for="f-desc">Describe</label>
+					<textarea id="f-desc" maxlength="240" placeholder="What will you do for two minutes?"></textarea>
+				</div>
+
+				<div class="field">
+					<label for="f-start">Alarm reminder</label>
+					<div class="row2">
+						<input id="f-start" type="time" value="15:00" aria-label="Reminder window start" />
+						<span class="dash">to</span>
+						<input id="f-end" type="time" value="17:00" aria-label="Reminder window end" />
+					</div>
+					<select id="f-day">
+						<option value="daily">Daily</option>
+						<option value="mon" selected>Monday</option>
+						<option value="tue">Tuesday</option>
+						<option value="wed">Wednesday</option>
+						<option value="thu">Thursday</option>
+						<option value="fri">Friday</option>
+						<option value="sat">Saturday</option>
+						<option value="sun">Sunday</option>
+					</select>
+				</div>
+
+				<div class="field">
+					<label for="f-session-start">Session duration</label>
+					<div class="row2">
+						<input id="f-session-start" type="time" value="13:00" aria-label="Session window start" />
+						<span class="dash">to</span>
+						<input id="f-session-end" type="time" value="14:00" aria-label="Session window end" />
+					</div>
+				</div>
+
+				<div class="field">
+					<label for="f-duration">Focus timer</label>
+					<select id="f-duration">
+						<option value="120" selected>2 minutes</option>
+						<option value="300">5 minutes</option>
+						<option value="600">10 minutes</option>
+						<option value="900">15 minutes</option>
+					</select>
+				</div>
+
+				<div class="field">
+					<label for="f-worktype">Type of work</label>
+					<select id="f-worktype"></select>
+				</div>
+
+				<div class="field">
+					<label>Icon</label>
+					<div class="icongrid" id="f-icons" role="radiogroup" aria-label="Habit icon"></div>
+				</div>
+
+				<p class="error" id="f-error"></p>
+			</div>
+
+			<div class="footer">
+				<button class="btn ghost" id="btn-cancel">Cancel</button>
+				<button class="btn" id="btn-save">Create</button>
+			</div>
+		</section>
+
+		<!-- ═══════════════ HABIT VIEW ═══════════════ -->
+		<section class="view" id="view-habit">
+			<div class="topbar">
+				<button class="iconbtn" id="btn-habit-back" aria-label="Back">
+					<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+						<polyline points="15 18 9 12 15 6" />
+					</svg>
+				</button>
+				<button class="iconbtn danger" id="btn-delete" aria-label="Delete habit">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+						<polyline points="3 6 5 6 21 6" />
+						<path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+						<path d="M10 11v6M14 11v6" />
+						<path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+					</svg>
+				</button>
+			</div>
+
+			<div>
+				<h2 class="title" id="h-name">Coding Habit</h2>
+				<p class="sub" id="h-desc"></p>
+				<div class="metarow">
+					<span class="meta" id="h-meta"></span>
+					<span class="meta work" id="h-work"></span>
+				</div>
+			</div>
+
+			<button class="btn" id="btn-start">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+					<polygon points="6 3 20 12 6 21 6 3" />
+				</svg>
+				<span id="btn-start-label">Start Now · 2:00</span>
+			</button>
+
+			<button class="linkbtn" id="btn-stop" hidden>Cancel session</button>
+
+			<div class="sect">History log</div>
+			<div class="log" id="habit-log"></div>
+		</section>
+
+		<!-- ═══════════════ DELETE CONFIRM ═══════════════ -->
+		<div class="sheet" id="confirm">
+			<div class="panel">
+				<h4>Delete this habit?</h4>
+				<p>Its history log goes with it. This cannot be undone.</p>
+				<div class="footer">
+					<button class="btn ghost" id="btn-confirm-no">Keep</button>
+					<button class="btn danger" id="btn-confirm-yes">Delete</button>
+				</div>
+			</div>
+		</div>
+
+		<audio id="chime" src="chime.mp3" preload="auto"></audio>
+		<script src="icons.js"></script>
+		<script src="renderer.js"></script>
+	</body>
+</html>
