@@ -56,6 +56,12 @@ function migrate(habit) {
 	// Work type arrived after icons; "" means "no type picked".
 	if (habit.workType === undefined) habit.workType = "";
 
+	// Log entries predate ids and notes; backfill so both can be relied on.
+	habit.logs.forEach((entry, i) => {
+		if (entry.id === undefined) entry.id = `l_legacy_${i}_${entry.at}`;
+		if (entry.note === undefined) entry.note = "";
+	});
+
 	return habit;
 }
 
@@ -107,7 +113,27 @@ function addLog(id, duration) {
 	const habit = get(id);
 	if (!habit) return null;
 
-	habit.logs.unshift({ at: new Date().toISOString(), duration: Number(duration) || habit.duration });
+	// Entries carry an id so the popup can attach a note to this exact session
+	// after the fact. Newest first, so the new entry is always logs[0].
+	habit.logs.unshift({
+		id: `l_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+		at: new Date().toISOString(),
+		duration: Number(duration) || habit.duration,
+		note: "",
+	});
+
+	write();
+	return habit;
+}
+
+function setLogNote(habitId, logId, note) {
+	const habit = get(habitId);
+	if (!habit) return null;
+
+	const entry = habit.logs.find((l) => l.id === logId);
+	if (!entry) return null;
+
+	entry.note = String(note || "").trim().slice(0, 500);
 	write();
 	return habit;
 }
@@ -128,4 +154,4 @@ function markSessionEnded(id, dayKey) {
 	write();
 }
 
-module.exports = { init, list, get, create, remove, addLog, markReminded, markSessionEnded };
+module.exports = { init, list, get, create, remove, addLog, setLogNote, markReminded, markSessionEnded };

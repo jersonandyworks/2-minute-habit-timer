@@ -580,12 +580,25 @@ button {
 }
 
 .log .li {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
 	padding: 11px 0;
 	font-size: 13px;
 	border-bottom: 1px solid var(--c1);
+}
+
+.log .li .row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+/* What the user typed into the finished-session popup. */
+.log .li .note {
+	margin: 6px 0 0 24px;
+	font-size: 12.5px;
+	line-height: 1.45;
+	color: var(--ink-mid);
+	overflow-wrap: anywhere;
 }
 
 .log .li:last-child {
@@ -600,9 +613,11 @@ button {
 	color: var(--ink);
 }
 
-.log .li span {
-	font: 500 12px/1 "Space Grotesk", monospace;
+.log .li .row span {
+	flex: none;
+	font: 500 11px/1 "Space Grotesk", monospace;
 	color: var(--ink-dim);
+	white-space: nowrap;
 }
 
 .log .none {

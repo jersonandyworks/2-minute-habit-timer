@@ -13,7 +13,8 @@ Inspired by the *Atomic Habits* **Two-Minute Rule**, this app encourages deep fo
 - 🔔 **Alarm reminder windows**—"3 PM to 5 PM on Monday"; one nudge once you're inside the window.
 - 🗓 **Session duration**—the slot the habit lives in (say 1 PM to 2 PM). Start Now only works inside it,
   and when it closes a popup tells you how you did.
-- 📖 **History log**—every finished session is recorded, with a running day streak.
+- 📝 **Note what you did**—the finish popup asks what you got done; it lands in the log.
+- 📖 **History log**—every session recorded to the minute (September 7, 2026 @ 1:06pm), with a running day streak.
 - 🧰 **Type of work**—pick your trade (coding, SEO, copywriting, design, video, data, AI and more).
 - 💬 **A quote at the finish line**—a chime, a popup, and a line from your own trade: 20 per work type.
 - 🎨 **Pick an icon**—twelve to choose from, so habits are recognisable at a glance.

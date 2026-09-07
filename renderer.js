@@ -41,11 +41,19 @@ function shortClock(seconds) {
 	return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
-function formatDate(iso) {
+const MONTHS = [
+	"January", "February", "March", "April", "May", "June",
+	"July", "August", "September", "October", "November", "December",
+];
+
+// "September 7, 2026 @ 1:06pm"
+function formatStamp(iso) {
 	const d = new Date(iso);
-	const mm = String(d.getMonth() + 1).padStart(2, "0");
-	const dd = String(d.getDate()).padStart(2, "0");
-	return `${mm}/${dd}/${d.getFullYear()}`;
+	const hours = d.getHours();
+	const suffix = hours >= 12 ? "pm" : "am";
+	const hour12 = hours % 12 === 0 ? 12 : hours % 12;
+
+	return `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} @ ${hour12}:${String(d.getMinutes()).padStart(2, "0")}${suffix}`;
 }
 
 function dayKey(date) {
@@ -235,15 +243,18 @@ function renderHabit() {
 				.map(
 					(entry, i) => `
 					<div class="li">
-						<i>
-							<span class="tick">
-								<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
-									<polyline points="20 6 9 17 4 12"/>
-								</svg>
-							</span>
-							Session ${habit.logs.length - i}
-						</i>
-						<span>${formatDate(entry.at)}</span>
+						<div class="row">
+							<i>
+								<span class="tick">
+									<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
+										<polyline points="20 6 9 17 4 12"/>
+									</svg>
+								</span>
+								Session ${habit.logs.length - i}
+							</i>
+							<span>${formatStamp(entry.at)}</span>
+						</div>
+						${entry.note ? `<p class="note">${escapeHtml(entry.note)}</p>` : ""}
 					</div>`
 				)
 				.join("")

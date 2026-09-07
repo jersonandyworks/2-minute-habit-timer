@@ -93,6 +93,46 @@
 				display: none;
 			}
 
+			.notefield {
+				width: 100%;
+				max-width: 380px;
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+				text-align: left;
+			}
+
+			.notefield label {
+				font: 600 11px/1 "Outfit", sans-serif;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--ink-dim);
+			}
+
+			.notefield textarea {
+				width: 100%;
+				height: 74px;
+				resize: none;
+				border: none;
+				border-radius: var(--radius-field);
+				box-shadow: inset 0 0 0 1.5px rgba(150, 230, 245, 0.9);
+				padding: 11px 13px;
+				font-family: inherit;
+				font-size: 14px;
+				line-height: 1.45;
+				color: var(--ink);
+				outline: none;
+				user-select: text;
+			}
+
+			.notefield textarea:focus {
+				box-shadow: inset 0 0 0 2px var(--c4);
+			}
+
+			.notefield textarea::placeholder {
+				color: var(--ink-dim);
+			}
+
 			.btn {
 				width: auto;
 				min-width: 160px;
@@ -112,6 +152,11 @@
 		<p class="note" id="note"></p>
 		<blockquote id="quote">Loading…</blockquote>
 		<p class="by" id="by"></p>
+
+		<div class="notefield" id="notefield" hidden>
+			<label for="notes">What did you get done?</label>
+			<textarea id="notes" maxlength="500" placeholder="Two minutes of…"></textarea>
+		</div>
 
 		<button class="btn" id="close">Close</button>
 

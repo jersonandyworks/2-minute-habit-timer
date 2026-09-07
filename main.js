@@ -56,10 +56,17 @@ function createWindow() {
 }
 
 // Only ever one popup. A second finished session reuses the open window.
-function showPopup({ kind, title, message, note, quote }) {
-	const payload = { kind, title, message, note: note || "", quote };
+// The finished-session popup carries a note field, so it needs more room.
+function popupHeight(kind) {
+	return kind === "done" ? 470 : 340;
+}
+
+function showPopup({ kind, title, message, note, quote, target }) {
+	const payload = { kind, title, message, note: note || "", quote, target: target || null };
 
 	if (popupWindow) {
+		popupWindow.setSize(460, popupHeight(kind));
+		popupWindow.center();
 		popupWindow.webContents.send("popup:data", payload);
 		popupWindow.show();
 		popupWindow.focus();
@@ -68,7 +75,7 @@ function showPopup({ kind, title, message, note, quote }) {
 
 	popupWindow = new BrowserWindow({
 		width: 460,
-		height: 340,
+		height: popupHeight(kind),
 		icon: path.join(__dirname, "build/icon.ico"),
 		alwaysOnTop: true,
 		resizable: false,
@@ -202,8 +209,17 @@ ipcMain.handle("session:complete", (event, { id, duration }) => {
 		title: "Your session is done",
 		message: habit ? habit.name : "",
 		quote: quoteFor(habit),
+		// what the note field will be attached to
+		target: habit ? { habitId: habit.id, logId: habit.logs[0].id } : null,
 	});
 
+	return habit;
+});
+
+// The note arrives from the popup after the session is already logged.
+ipcMain.handle("log:note", (event, { habitId, logId, note }) => {
+	const habit = store.setLogNote(habitId, logId, note);
+	if (habit && mainWindow) mainWindow.webContents.send("habits:changed");
 	return habit;
 });
 

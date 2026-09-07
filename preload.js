@@ -13,6 +13,8 @@ contextBridge.exposeInMainWorld("api", {
 
 	onHabitsChanged: (fn) => ipcRenderer.on("habits:changed", () => fn()),
 
+	saveLogNote: (habitId, logId, note) => ipcRenderer.invoke("log:note", { habitId, logId, note }),
+
 	// popup window only
 	onPopupData: (fn) => ipcRenderer.on("popup:data", (event, data) => fn(data)),
 	closePopup: () => ipcRenderer.send("popup:close"),

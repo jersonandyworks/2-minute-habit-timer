@@ -53,8 +53,9 @@ a CSP that blocks inline `<script>`, so all JS lives in its own file.
 - **`icons.js`** — the habit icon set as a global `ICONS` map of 24x24 stroked SVG
   innards, plus `ICON_KEYS` and `DEFAULT_ICON`. Loaded before `renderer.js`. **Icon keys
   are stored on the habit, so renaming one orphans existing habits** — add, don't rename.
-- **`popup.html` / `popup.js`** — the finish/reminder window. Same file serves both,
-  switched by the `kind` field.
+- **`popup.html` / `popup.js`** — the finish / reminder / session-end window. One file
+  serves all three, switched by the `kind` field; only `kind: "done"` shows the note
+  field, and the window is resized per kind by `popupHeight()` in `main.js`.
 - **`styles.css`** — the whole design system. Palette tokens live in `:root`.
 - **`design.html`** — the three original design directions. Reference, not shipped UI.
 
@@ -66,12 +67,27 @@ a CSP that blocks inline `<script>`, so all JS lives in its own file.
   reminderDay: "daily"|"mon".."sun",              // applies to both windows
   sessionStart: "13:00", sessionEnd: "14:00",     // the daily slot for the habit
   duration: 120,                                  // focus countdown, in seconds
+  icon: "code", workType: "coding",               // icons.js / work-quotes.js keys
   createdAt, lastReminded: "YYYY-MM-DD", lastSessionEnded: "YYYY-MM-DD",
-  logs: [{ at, duration }] }
+  logs: [{ id, at, duration, note }] }
 ```
 
-`logs` is newest-first (`unshift`). `lastReminded` is what stops a reminder firing twice
-in one day.
+`logs` is newest-first (`unshift`), so a session just logged is always `logs[0]` — that is
+how `session:complete` tells the popup which entry its note belongs to. `lastReminded` is
+what stops a reminder firing twice in one day.
+
+### Session notes
+
+The finished-session popup collects "what did you get done?" and writes it back over
+`log:note`. The flow is deliberately two-step: `session:complete` logs the session and
+returns immediately (so the log is never lost if the popup is dismissed), then the note is
+attached afterwards by `{ habitId, logId }`, which main sends to the popup as `target`.
+`target` is null for the reminder and session-end popups, and the note field stays hidden
+for them. Notes are trimmed and capped at 500 characters in `store.setLogNote`.
+
+The popup saves on the way out — there is no separate save button — so anything typed
+survives closing with the button, Enter, or Escape. Ctrl/Cmd+Enter also submits from
+inside the textarea, where a bare Enter means newline.
 
 ### IPC channels
 
@@ -80,9 +96,10 @@ in one day.
 | `work:types` | invoke | the work-type dropdown options |
 | `habits:list` / `habits:get` | invoke | read from the store |
 | `habits:create` / `habits:delete` | invoke | mutate and persist |
-| `session:complete` | invoke | log the session, open the popup with a random quote, return the updated habit |
+| `session:complete` | invoke | log the session, open the popup with a work-type quote, return the updated habit |
+| `log:note` | invoke | attach the popup's note to one log entry, then tell the renderer to refresh |
 | `habits:changed` | main → renderer | a reminder fired; the renderer refetches |
-| `popup:data` | main → popup | `{ kind, title, message, note, quote: { text, by } }` |
+| `popup:data` | main → popup | `{ kind, title, message, note, quote: { text, by }, target }` |
 | `popup:close` | popup → main | close the popup window |
 
 ### Three durations, don't mix them up
@@ -143,6 +160,8 @@ Don't drop it until those files are certainly gone.
   `iconFor()` falls back to cycling the set by list position for those.
 - `habit.workType` is a `WORK_QUOTES` key, or `""`. `quoteFor()` in `main.js` routes on it
   and falls back to `quotes.js`, so an unknown key degrades quietly instead of throwing.
+  Every popup uses it — don't reintroduce a path that shows the description instead.
+- History stamps come from `formatStamp()`: "September 7, 2026 @ 1:06pm".
 - The focus timer is stored in seconds; the picker offers 120/300/600/900.
 - Window times are `"HH:MM"` strings, 24-hour, compared as minutes-since-midnight.
 - Electron is pinned to `^44` — 36.x carries known high-severity advisories.
